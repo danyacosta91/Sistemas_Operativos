@@ -40,7 +40,7 @@ void *rmEXEC( void *comando ){
 
 void *cdDIR( void *comando ){
     _commando = "cd " + _rutaMKDIR;
-    system( _commando.c_str() );
+    chdir( _rutaMKDIR.c_str() );
     _commando = "";
 }
 
@@ -141,15 +141,12 @@ int main()
     _TComandos.push_back("mkdirS01");_TComandos.push_back("rmdirS01");
     _TComandos.push_back("cdS01");_TComandos.push_back("rmS01");
     _TComandos.push_back("whichS01");_TComandos.push_back("catS01");
+    _TComandos.push_back("exit");
     initscr ();
     //cbreak ();
 
-    printw (_get.c_str());
-    tecla = getch ();
     do{
         erase();
-        _line += tecla;
-        _get += tecla;
         printw (_get.c_str());
         tecla = getch ();
         if( tecla == 9 ){
@@ -158,8 +155,6 @@ int main()
                 erase();
                 _line = _tmp;
                 _get = "Mi_sh>" + _tmp;
-                printw (_get.c_str());
-                tecla = getch ();
             }
         }else if( tecla == 10 ){
             _args.clear();
@@ -170,139 +165,92 @@ int main()
                         _rutaMKDIR = _PWD + "/"+ _args[1];
                         pthread_create( &_hilo, NULL, mkDIR, (void *) &_opc);
                         pthread_join( _hilo, NULL);
-                        clear();
-                        _line = "";
                         _get = "Mi_sh>";
-                        printw (_get.c_str());
-                        tecla = getch ();
                     }else{
-                        clear();
                         _get = "Falta de argumentos!\nMi_sh>";
-                        printw(_get.c_str());
-                        tecla = getch ();
-                        _line = "";
                     }
                 }else if( strcmp(_args[0].c_str(),"rmdirS01") == 0 ){
                     if( _args.size() > 1 ){
                         _rutaMKDIR = _PWD + "/"+ _args[1];
                         pthread_create( &_hilo, NULL, rmDIR, (void *) &_opc);
                         pthread_join( _hilo, NULL);
-                        clear();
-                        _line = "";
                         _get = "Mi_sh>";
-                        printw (_get.c_str());
-                        tecla = getch ();
                     }else{
-                        clear();
                         _get = "Falta de argumentos!\nMi_sh>";
-                        printw(_get.c_str());
-                        tecla = getch ();
-                        _line = "";
+                    }
+                }else if( strcmp(_args[0].c_str(),"cdS01") == 0 ){
+                    if( _args.size() > 1 ){
+                        _rutaMKDIR = _PWD + "/"+ _args[1];
+                        pthread_create( &_hilo, NULL, cdDIR, (void *) &_opc);
+                        pthread_join( _hilo, NULL);
+                        _get = "Mi_sh>";
+                    }else{
+                        _rutaMKDIR = _PWD;
+                        pthread_create( &_hilo, NULL, cdDIR, (void *) &_opc);
+                        pthread_join( _hilo, NULL);
+                        _get = "Mi_sh>";
                     }
                 }else if( strcmp(_args[0].c_str(),"rmS01") == 0 ){
                     if( _args.size() > 1 ){
                         _rutaMKDIR = _args[1];
                         pthread_create( &_hilo, NULL, rmEXEC, (void *) &_opc);
                         pthread_join( _hilo, NULL);
-                        clear();
-                        _line = "";
                         _get = "Mi_sh>";
-                        printw (_get.c_str());
-                        tecla = getch ();
                     }else{
-                        clear();
                         _get = "Falta de argumentos!\nMi_sh>";
-                        printw(_get.c_str());
-                        tecla = getch ();
-                        _line = "";
                     }
                 }else if( strcmp(_args[0].c_str(),"whichS01") == 0 ){
                     if( _args.size() > 1 ){
                         _opc = buscarCommand( _args[1], seglist );
                         if( _opc != -1 ){
-                            clear();
-                            _line = "";
                             _get = seglist[_opc] + "\nMi_sh>";
-                            printw (_get.c_str());
-                            tecla = getch ();
                         }else{
-                            clear();
                             _get = "Comando no encontrado!\nMi_sh>";
-                            printw(_get.c_str());
-                            tecla = getch ();
-                            _line = "";
                         }
                     }else{
-                        clear();
                         _get = "Falta de argumentos!\nMi_sh>";
-                        printw(_get.c_str());
-                        tecla = getch ();
-                        _line = "";
                     }
                 }else if( strcmp(_args[0].c_str(),"catS01") == 0 ){
                     if( _args.size() > 1 ){
                         if( _args.size() == 2 ){
                             _tmp = leerArchivo( _args[1] );
-                            clear();
-                            _line = "";
                             _get = _tmp + "\nMi_sh>";
-                            printw (_get.c_str());
-                            tecla = getch ();
                         }else{
                             _commando = "";
                             for( int i = 1; i < _args.size(); i++ )
                                 _commando += _args[i] + " ";
                             pthread_create( &_hilo, NULL, catEXEC, (void *) &_opc);
                             pthread_join( _hilo, NULL);
-                            clear();
-                            _line = "";
                             _get = "Mi_sh>";
-                            printw (_get.c_str());
-                            tecla = getch ();
                         }
                     }else{
-                        clear();
                         _get = "Falta de argumentos!\nMi_sh>";
-                        printw(_get.c_str());
-                        tecla = getch ();
-                        _line = "";
                     }
                 }else{
                     _opc = buscarCommand( _args[0], seglist );
                     if( _opc != -1 ){
                         _tmp = "Mi_sh>" + _line + "\n";
-                        erase();
                         _commando = _line;
                         pthread_create( &_hilo, NULL, execCommand, (void *) &_opc);
     					pthread_join( _hilo, NULL);
                         clear();
                         _ruta = leerArchivo("arch.txt");
                         _tmp += _ruta;
-                        //printw(_tmp.c_str());
-                        _line = "";
-                        _get = _tmp + "\nMi_sh>";
-                        printw (_get.c_str());
-                        tecla = getch ();
+                        _get = _tmp + "Mi_sh>";
                     }else{
-                        clear();
                         _get = "Comando no encontrado!\nMi_sh>";
-                        printw(_get.c_str());
-                        tecla = getch ();
-                        _line = "";
                     }
                 }
             }
+            _line = "";
         }else if( tecla == 127 ){
             if( _line.length() > 0 ){
-                _tmp = "";
-                for( int i = 0; i < _line.length()-2; i++ )
-                    _tmp += _line.at(i);
-                erase();
-                _line = _tmp;
-                _get = "Mi_sh>" + _tmp;
-                printw (_get.c_str());
-                tecla = getch ();
+                _line = _line.substr( 0, _line.length()-1 );
+                _get += "\nMi_sh>" + _line;
             }
+        }else{
+        	_line += tecla;
+        	_get += tecla;
         }
     }while( strcmp(_line.c_str(), "exit") != 0 );
     endwin ();
