@@ -89,11 +89,16 @@ int buscarCommand( string _line, vector<string>& tokens ){
 string sePuedeCompletar(string line, vector<string>& tokens){
     int cont = 0;
     string val = "";
+    bool _bandera = true;
     for( auto it = tokens.begin(); it != tokens.end(); it++ ){
         val = *it;
         cont = 0;
         for( int i = 0; i < val.length(); i++ ){
             if( cont < line.length() && line.at(cont) == val.at(i) ){
+            	if( cont != i ){
+            		cont = 0;
+            		break;
+            	}
                 cont++;
             }
         }
@@ -136,12 +141,24 @@ int main()
 
     string _get = "Mi_sh>";
     vector<string> _TComandos;
-    _TComandos.push_back("gedit");_TComandos.push_back("ls");
-    _TComandos.push_back("ps");_TComandos.push_back("cat");
-    _TComandos.push_back("mkdirS01");_TComandos.push_back("rmdirS01");
-    _TComandos.push_back("cdS01");_TComandos.push_back("rmS01");
-    _TComandos.push_back("whichS01");_TComandos.push_back("catS01");
-    _TComandos.push_back("exit");
+    _TComandos.push_back("gedit");_TComandos.push_back("ls");_TComandos.push_back("shutdown");
+    _TComandos.push_back("ps");_TComandos.push_back("rmS01");_TComandos.push_back("halt");
+    _TComandos.push_back("mkdirS01");_TComandos.push_back("rmdirS01");_TComandos.push_back("reboot");
+    _TComandos.push_back("whichS01");_TComandos.push_back("catS01");_TComandos.push_back("find");
+    _TComandos.push_back("exit");_TComandos.push_back("cdS01");_TComandos.push_back("alias");
+    _TComandos.push_back("cat");_TComandos.push_back("grep");_TComandos.push_back("bzip2");
+    _TComandos.push_back("kill");_TComandos.push_back("arch");_TComandos.push_back("cal");
+    _TComandos.push_back("uname");_TComandos.push_back("date");_TComandos.push_back("chmod");
+    _TComandos.push_back("chown");_TComandos.push_back("cmp");_TComandos.push_back("date");
+    _TComandos.push_back("du");_TComandos.push_back("whereis");_TComandos.push_back("mount");
+    _TComandos.push_back("gzip");_TComandos.push_back("tar");_TComandos.push_back("zip");
+    _TComandos.push_back("echo");_TComandos.push_back("dump");_TComandos.push_back("egrep");
+    _TComandos.push_back("env");_TComandos.push_back("eject");_TComandos.push_back("dirs");
+    _TComandos.push_back("gcc");_TComandos.push_back("g++");_TComandos.push_back("last");
+    _TComandos.push_back("man");_TComandos.push_back("pstree");_TComandos.push_back("time");
+    _TComandos.push_back("users");_TComandos.push_back("vim");_TComandos.push_back("vi");
+    _TComandos.push_back("w");_TComandos.push_back("who");_TComandos.push_back("whoami");
+    _TComandos.push_back("xkill");_TComandos.push_back("whatis");_TComandos.push_back("wall");
     initscr ();
     //cbreak ();
 
